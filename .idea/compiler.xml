@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="SBtest4" />
+        <module name="Gateway" />
+        <module name="eureka" />
+        <module name="BookingService" />
+        <module name="car-service" />
+        <module name="office" />
+        <module name="session-service" />
+        <module name="PaymentService" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="CarService" target="1.8" />
+      <module name="Eureka" target="1.8" />
+      <module name="RentService" target="1.8" />
+      <module name="SessionService" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="BookingService" options="-parameters" />
+      <module name="CarService" options="-parameters" />
+      <module name="Eureka" options="-parameters" />
+      <module name="Gateway" options="-parameters" />
+      <module name="PaymentService" options="-parameters" />
+      <module name="RentService" options="-parameters" />
+      <module name="SessionService" options="-parameters" />
+      <module name="car-service" options="-parameters" />
+      <module name="eureka" options="-parameters" />
+      <module name="office" options="-parameters" />
+      <module name="session-service" options="-parameters" />
+    </option>
+  </component>
+</project>
