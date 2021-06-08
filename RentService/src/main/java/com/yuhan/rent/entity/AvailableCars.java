@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Data
 @Table(name = "availableCars", indexes = {
         @Index(name = "idx_available_car_uid", columnList = "car_uid"),
+        @Index(name = "idx_available_office_uid", columnList = "office_uid"),
         @Index(name = "idx_available_registration_number", columnList = "registration_number")
 })
 public class AvailableCars {
@@ -22,8 +23,8 @@ public class AvailableCars {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-//    @Column(name = "office_uid", nullable = false)
-//    private Integer officeUid;
+    @Column(name = "office_uid", nullable = false)
+    private Integer officeUid;
 
 //(fetch = FetchType.LAZY)
     @ManyToOne
@@ -39,8 +40,8 @@ public class AvailableCars {
     public AvailableCars() {
     }
 
-    public AvailableCars(Car car, Integer registrationNumber, String availabilitySchedules) {
-//        this.officeUid = officeUid;
+    public AvailableCars(Car car,Integer officeUid, Integer registrationNumber, String availabilitySchedules) {
+        this.officeUid = officeUid;
         this.car = car;
         this.registrationNumber = registrationNumber;
         this.availabilitySchedules = availabilitySchedules;

@@ -25,4 +25,8 @@ public interface BookingService {
     public String dealTime(int bookingUid);
 
     public void finishBooking(int bookingUid);
+
+    public List<Booking> byModel(String model);
+
+    public List<Booking> byOffices(int officeUid);
 }

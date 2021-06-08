@@ -12,16 +12,16 @@ import lombok.Data;
  */
 @Data
 public class OfficeCarResponse {
-    private int id;
+//    private int id;
     private Office office;
     private AvailableCars availableCars;
-    private String AvailabilitySchedules;;
+//    private String AvailabilitySchedules;
 
-    public OfficeCarResponse(int id, Office office, AvailableCars availableCars, String availabilitySchedules) {
-        this.id = id;
+    public OfficeCarResponse(Office office, AvailableCars availableCars) {
+//        this.id = id;
         this.office = office;
         this.availableCars = availableCars;
-        AvailabilitySchedules = availabilitySchedules;
+//        AvailabilitySchedules = availabilitySchedules;
     }
 
     public OfficeCarResponse() {

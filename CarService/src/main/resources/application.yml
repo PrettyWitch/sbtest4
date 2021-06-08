@@ -9,7 +9,7 @@ spring:
     #    jdbc:mysql://localhost:3306/library
     #    com.mysql.cj.jdbc,Driver
     #    jdbc:postgresql://localhost:5432/db1
-    url: jdbc:mysql://localhost:3306/library
+    url: jdbc:mysql://localhost:3306/library?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: root1234
     driver-class-name: com.mysql.cj.jdbc.Driver

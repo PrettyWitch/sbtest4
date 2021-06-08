@@ -11,13 +11,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.Value;
 import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +38,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
     @GetMapping("/findall")
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userService.findAll();
     }
 
@@ -46,7 +54,7 @@ public class UserController {
             @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping("/{userUid}")
-    public User findByUid(@PathVariable int userUid){
+    public User findByUid(@PathVariable int userUid) {
         return userService.findByUserUid(userUid);
     }
 
@@ -59,7 +67,7 @@ public class UserController {
             @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("/create")
-    public String CreateUser(@Valid @RequestBody User user){
+    public String CreateUser(@Valid @RequestBody User user) {
         return userService.CreateUser(user);
     }
 
@@ -73,7 +81,7 @@ public class UserController {
             @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("/login")
-    public AjaxResult Login(@Valid @RequestBody User user){
+    public AjaxResult Login(@Valid @RequestBody User user) {
         String name = user.getName();
         String password = user.getPassword();
 //        //身份验证
@@ -81,35 +89,48 @@ public class UserController {
 //        if (isSuccess){
 //
 //        }
-        if (userService.Login(user)){
-            String token = JwtUtil.sign(name,password);
+        if (userService.Login(user)) {
+            String token = JwtUtil.sign(name, password);
             if (token != null) {
-                return AjaxResult.success("成功",token);
+                HttpHeaders headers = new HttpHeaders();
+                // 设置token到请求头 header
+                headers.add("Authorization", "Bearer " + token);
+                return AjaxResult.success("成功", token);
+
             }
         }
+
         return AjaxResult.fail();
     }
 
+
     @PostMapping("/getUser")
-    public AjaxResult getUser(HttpServletRequest request, @Valid @RequestBody User user){
+    public AjaxResult getUser(HttpServletRequest request, @Valid @RequestBody User user) {
         String name = user.getName();
+//        Enumeration<String> headerNames = request.getHeaderNames();
+        String authHeader = request.getHeader("Authorization");
+//        String authorization = request.getParameter("Authorization");
+        String authToken = authHeader.substring(0,6);
+        logger.info("authorization:{},authToken:{} ", authHeader, authToken);
 //        String token = request.getHeader("Authorization");
         String token = request.getHeader("token");
+        logger.info("token:{}", token);
         boolean verity = JwtUtil.verity(token);
-        if (verity){
+        if (verity) {
             User user2 = userService.getUser(name);
-            if (user2 != null){
+            if (user2 != null) {
                 return AjaxResult.success("成功", user2);
             }
         }
         return AjaxResult.fail();
     }
 
+
     @PostMapping("/getUserInfo")
-    public AjaxResult getUserInfo(HttpServletRequest request){
+    public AjaxResult getUserInfo(HttpServletRequest request) {
 //        String usernameFromToken = JwtUtil.getUsernameFromToken(request.getHeader("token"));
-        String usernameFromToken = JwtUtil.getUsernameFromToken(request.getHeader("Authorization"));
-        User user = userService.getUser(usernameFromToken);
-        return AjaxResult.success("成功", user.toString());
+        User usernameFromToken = JwtUtil.getUsernameFromToken(request.getHeader("Authorization"));
+//        User user = userService.getUser(usernameFromToken);
+        return AjaxResult.success("成功", usernameFromToken.toString());
     }
 }

@@ -3,12 +3,12 @@ package com.yuhan.rent.web;
 import com.yuhan.car.entity.Car;
 import com.yuhan.rent.entity.AvailableCars;
 import com.yuhan.rent.entity.Office;
-import com.yuhan.rent.entity.OfficeCars;
+//import com.yuhan.rent.entity.OfficeCars;
 import com.yuhan.rent.exception.ErrorResponse;
 import com.yuhan.rent.response.OfficeCarResponse;
 import com.yuhan.rent.service.AvailableCarsService;
 import com.yuhan.rent.service.CarService;
-import com.yuhan.rent.service.OfficeCarsService;
+//import com.yuhan.rent.service.OfficeCarsService;
 import com.yuhan.rent.service.OfficeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,7 +34,7 @@ import java.util.Optional;
  */
 
 @RestController
-@RequestMapping("/office")
+@RequestMapping("/offices")
 public class OfficeController {
 
     @Autowired
@@ -46,8 +46,8 @@ public class OfficeController {
     @Autowired
     AvailableCarsService availableCarsService;
 
-    @Autowired
-    OfficeCarsService officeCarsService;
+//    @Autowired
+//    OfficeCarsService officeCarsService;
 
     private static final Logger logger = LoggerFactory.getLogger(OfficeController.class);
 
@@ -164,7 +164,7 @@ public class OfficeController {
     /**
      * 11.在办公室添加新车。[A] [M] [G]
      *
-     * @param officeCars body: { registration_number, available }
+     * @param availableCar body: { registration_number, available }
      * @param officeUid  POST /offices/{officeUid}/car/{carUid}
      * @param carUid
      */
@@ -177,16 +177,22 @@ public class OfficeController {
             @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @PostMapping("/{officeUid}/car/{carUid}")
-    public String addCarToOffice(@Valid @RequestBody OfficeCars officeCars, @PathVariable int officeUid, @PathVariable int carUid) {
-        AvailableCars availableCar = availableCarsService.findByRegistrationNumber(officeCars.getRegistrationNumber());
-        if (availableCar.getCar().getCarUid() == carUid) {
-            officeCars.setOfficeUid(officeUid);
-            officeCars.setCarUid(carUid);
-            officeCarsService.addCarToOffice(officeCars);
-            return "success";
-        } else {
-            return "CarUid and RegistrationNumber don't match";
-        }
+    public void addCarToOffice(@Valid @RequestBody AvailableCars availableCar, @PathVariable int officeUid, @PathVariable int carUid) {
+        logger.info("availableCar:{}", availableCar);
+        availableCar.setOfficeUid(officeUid);
+        Car car = carService.findByCarUid(carUid);
+        availableCar.setCar(car);
+        logger.info("availableCar:{}", availableCar);
+        availableCarsService.saveAvailableCar(availableCar);
+//        AvailableCars availableCar = availableCarsService.findByRegistrationNumber(officeCars.getRegistrationNumber());
+//        if (availableCar.getCar().getCarUid() == carUid) {
+//            officeCars.setOfficeUid(officeUid);
+//            officeCars.setCarUid(carUid);
+//            officeCarsService.addCarToOffice(officeCars);
+//            return "success";
+//        } else {
+//            return "CarUid and RegistrationNumber don't match";
+//        }
     }
 
     /***
@@ -203,7 +209,8 @@ public class OfficeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequestMapping(value = {"/{officeUid}/car/{carUid}"}, method = RequestMethod.DELETE)
     public void deleteCarFromOffice(@PathVariable("officeUid") int officeUid, @PathVariable("carUid") int carUid){
-        officeCarsService.deleteCarFromOffice(officeUid, carUid);
+        availableCarsService.deleteAvailableCar(officeUid, carUid);
+//        officeCarsService.deleteCarFromOffice(officeUid, carUid);
     }
 
     /***
@@ -218,8 +225,9 @@ public class OfficeController {
             @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping("/{officeUid}/cars")
-    public List<AvailableCars> searchAllCars(@PathVariable int officeUid) {
-       return officeCarsService.findAllCars(officeUid);
+    public List<OfficeCarResponse> searchAllCars(@PathVariable int officeUid) {
+        return availableCarsService.findByOfficeUid(officeUid);
+//       return officeCarsService.findAllCars(officeUid);
     }
 
     /***
@@ -236,9 +244,10 @@ public class OfficeController {
             @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
     })
     @GetMapping("/{officeUid}/cars/{carUid}")
-    public AvailableCars officeCarInfo(@PathVariable int officeUid, @PathVariable int carUid) {
-        int number = officeCarsService.findByOfficeUidAndCarUid(officeUid, carUid);
-        return availableCarsService.findByRegistrationNumber(number);
+    public List<OfficeCarResponse>  officeCarInfo(@PathVariable int officeUid, @PathVariable int carUid) {
+        return availableCarsService.findByOfficeUidCarUid(officeUid,carUid);
+//        int number = officeCarsService.findByOfficeUidAndCarUid(officeUid, carUid);
+//        return availableCarsService.findByRegistrationNumber(number);
     }
 
     /***
@@ -255,7 +264,9 @@ public class OfficeController {
     })
     @GetMapping("/cars/{carUid}")
     public List<OfficeCarResponse>  AvailableCarsInfo(@PathVariable int carUid) {
-        return officeCarsService.findAllOffice(carUid);
+        return availableCarsService.findByCarUid(carUid);
+
+//        return officeCarsService.findAllOffice(carUid);
 //        logger.info("/car/{carUid}");
 //        return availableCarsService.findByCarUid(carUid);
     }

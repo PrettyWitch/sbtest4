@@ -2,7 +2,6 @@ package com.yuhan.booking.service;
 
 import com.yuhan.car.entity.Car;
 import com.yuhan.rent.entity.AvailableCars;
-import com.yuhan.rent.entity.OfficeCars;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,12 +38,12 @@ public interface RentService {
     /**
      * 11.在办公室添加新车。[A] [M] [G]
      *
-     * @param officeCars body: { registration_number, available }
+     * @param availableCar body: { registration_number, available }
      * @param officeUid  POST /offices/{officeUid}/car/{carUid}
      * @param carUid
      */
     @RequestMapping(value = {"/office/{officeUid}/car/{carUid}"}, method = RequestMethod.POST)
-    public String addCarToOffice(@Valid @RequestBody OfficeCars officeCars, @PathVariable int officeUid, @PathVariable int carUid);
+    public String addCarToOffice(@Valid @RequestBody AvailableCars availableCar, @PathVariable int officeUid, @PathVariable int carUid);
 
     /**
      * 更新可用时间

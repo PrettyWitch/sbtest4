@@ -1,3 +1,8 @@
+jwt:
+  tokenHeader: Authorization
+  # 令牌前缀
+  tokenPrefix: Bearer
+
 spring:
   datasource:
     #    ?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
@@ -38,3 +43,17 @@ eureka:
 #jwt:
 #  httpHeader: Authorization
 #  tokenHead: Bearer
+
+
+### 从配置文件中加载jwttoken所需要配置信息
+#app:
+##  app-name: jwt-demo
+#  auth:
+#    secret: jwt-auth-70yOcFvo26qvle9i
+#    expireTimeout: PT1M
+#    #    expireTimeout: PT30M
+#    allow-csrf: false
+
+# 自定义配置
+#config:
+

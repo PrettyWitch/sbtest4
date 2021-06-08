@@ -22,7 +22,11 @@ public interface AvailableCarRepository extends JpaRepository<AvailableCars, Int
 
     public List<AvailableCars> findByCar(Car car);
 
+    public List<AvailableCars> findByOfficeUid(int officeUid);
+
     @Modifying
     @Query(value = "update AvailableCars set availabilitySchedules = :availabilitySchedules where registrationNumber = :registrationNumber")
-    public void updateAvailableCars(@Param("registrationNumber") int registrationNumber, @Param("availabilitySchedules")String availabilitySchedules);
+    public void updateAvailableCars(@Param("registrationNumber") int registrationNumber, @Param("availabilitySchedules") String availabilitySchedules);
+
+
 }

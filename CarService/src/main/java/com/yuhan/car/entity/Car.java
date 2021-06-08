@@ -51,4 +51,7 @@ public class Car {
         this.type = type;
     }
 
+    public Car(String model) {
+        this.model = model;
+    }
 }

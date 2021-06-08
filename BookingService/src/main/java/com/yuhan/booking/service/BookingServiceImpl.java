@@ -9,8 +9,8 @@ import com.yuhan.car.entity.Car;
 import com.yuhan.payment.entity.Payment;
 import com.yuhan.payment.entity.PaymentStatus;
 import com.yuhan.rent.entity.AvailableCars;
-import com.yuhan.rent.entity.OfficeCars;
-import lombok.SneakyThrows;
+//import com.yuhan.rent.entity.OfficeCars;
+//import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -291,8 +292,8 @@ public class BookingServiceImpl implements BookingService {
         logger.info("deleteCarFromOffice");
         //在新的Office中添加car
         //如果available period == null，不可用
-        OfficeCars officeCars = new OfficeCars(registrationNumber, availabilitySchedules);
-        rentService.addCarToOffice(officeCars, return_to_office, car_uid);
+        AvailableCars availableCars = new AvailableCars(registrationNumber, availabilitySchedules);
+        rentService.addCarToOffice(availableCars, return_to_office, car_uid);
         logger.info("addCarToOffice");
 
         //update payment -> PAID
@@ -301,5 +302,22 @@ public class BookingServiceImpl implements BookingService {
 
         //update booking -> FINISHED
         bookingRepository.updateBooking(bookingUid,BookingStatus.FINISHED);
+    }
+
+    @Override
+    public List<Booking> byModel(String model) {
+        List<Booking> bookings = new ArrayList<>();
+        List<Booking> all = bookingRepository.findAll();
+        for (Booking booking:all){
+            if (booking.getCar().getModel().equals(model)){
+                bookings.add(booking);
+            }
+        }
+        return bookings;
+    }
+
+    @Override
+    public List<Booking> byOffices(int officeUid) {
+        return bookingRepository.byOffices(officeUid);
     }
 }

@@ -11,16 +11,28 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.yuham.user.enetity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
-
+@Data
+@Component
+@ConfigurationProperties(prefix = "jwt")
 public class JwtUtil {
-
+    /**
+     * TokenKey
+     */
+    public static String tokenHeader;
+    /**
+     * Token前缀字符
+     */
+    public static String tokenPrefix;
 
     /**
      * 过期时间为一天
@@ -84,8 +96,11 @@ public class JwtUtil {
     /**
      * 获取用户名从token中
      */
-    public static String getUsernameFromToken(String token) {
-        return getTokenClaim(token).getSubject();
+    public static User getUsernameFromToken(String token) {
+//        return getTokenClaim(token).getSubject();
+        Claims claim = getTokenClaim(token);
+        assert claim != null;
+        return new User(claim.getSubject());
     }
 
 

@@ -26,6 +26,10 @@ public class Office {
     public Office() {
     }
 
+    public Office(int officeUid) {
+        this.officeUid = officeUid;
+    }
+
     public Office(int officeUid, String location) {
         this.officeUid = officeUid;
         this.location = location;

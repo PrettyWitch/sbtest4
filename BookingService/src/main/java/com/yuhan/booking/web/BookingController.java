@@ -4,7 +4,9 @@ import com.yuhan.booking.BookingApplication;
 import com.yuhan.booking.entity.Booking;
 import com.yuhan.booking.request.BookingRequest;
 import com.yuhan.booking.service.BookingService;
+import com.yuhan.car.entity.Car;
 import com.yuhan.car.exception.ErrorResponse;
+import com.yuhan.rent.entity.Office;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -88,5 +90,41 @@ public class BookingController {
     @PatchMapping("/{bookingUid}/finish")
     public void finishBooking(@PathVariable int bookingUid){
         bookingService.finishBooking(bookingUid);
+    }
+
+    /**
+     * 13.按型号查看汽车预订的统计信息。[A] [G]
+     * @param car GET /reports/booking-by-models
+     * @return
+     */
+    @Operation(summary = "Find booking by model")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Find booking by model"),
+            @ApiResponse(responseCode = "400", description = "Bad request format", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Booking not found", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+//            @ApiResponse(responseCode = "409", description = "Item not available", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @PostMapping("booking-by-models")
+    public List<Booking> byModel(@RequestParam String model){
+        return bookingService.byModel(model);
+    }
+
+    /**
+     * 14.按办公室查看预订统计信息。[A] [G]
+     * @param officeUid GET /reports/booking-by-offices
+     * @return
+     */
+    @Operation(summary = "Find booking by office")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Find booking by model"),
+            @ApiResponse(responseCode = "400", description = "Bad request format", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Booking not found", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+//            @ApiResponse(responseCode = "409", description = "Item not available", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "422", description = "External request failed", content = {@Content(schema = @Schema(implementation = ErrorResponse.class))})
+    })
+    @PostMapping("/booking-by-offices")
+    public List<Booking> byOffice(@RequestParam int officeUid){
+        return bookingService.byOffices(officeUid);
     }
 }

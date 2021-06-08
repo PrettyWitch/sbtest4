@@ -27,6 +27,7 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+
 server:
   #  vue的端口已经是8080，所以手动设置端口
   port: 8182

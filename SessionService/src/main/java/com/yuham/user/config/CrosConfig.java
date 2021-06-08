@@ -24,6 +24,7 @@ public class CrosConfig implements WebMvcConfigurer {
                 .allowedHeaders("*");
     }
 
+
 //      注册拦截器到SpringMvc
 //    @Resource
 //    private TokenInterceptor tokenInterceptor ;

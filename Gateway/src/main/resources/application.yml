@@ -24,16 +24,23 @@ zuul:
     session-service:
       path: /session/**  #映射路径
       serviceId: session-service # 指定服务端的名称
-    #8184
-    api-booking.path: /booking/**
-    api-booking.serviceId: booking-service
+    #8184 booking-service
+    booking-service:
+      path: /booking/**
+      serviceId: booking-service
     #    8185 payment-service
-    api-payment.path: /payment/**
-    api-payment.serviceId: payment-service
+    payment-service:
+      path: /payment/**
+      serviceId: payment-service
+    #    8186 report-service
+    report-service:
+      path: /reports/**  #映射路径
+      serviceId: report-service # 指定服务端的名称
+
     host:
-      connect-timeout-millis: 15000 #HTTP连接超时大于Hystrix的超时时间
+      connect-timeout-millis: 150000 #HTTP连接超时大于Hystrix的超时时间
       socket-timeout-millis: 600000   #socket超时
 
 ribbon:
-  ReadTimeout: 120000  #请求处理的超时时间
-  ConnectTimeout: 30000  #请求连接的超时时间
+  ReadTimeout: 10000  #请求处理的超时时间
+  ConnectTimeout: 10000  #请求连接的超时时间

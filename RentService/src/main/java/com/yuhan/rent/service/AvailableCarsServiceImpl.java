@@ -2,7 +2,9 @@ package com.yuhan.rent.service;
 
 import com.yuhan.car.entity.Car;
 import com.yuhan.rent.entity.AvailableCars;
+import com.yuhan.rent.entity.Office;
 import com.yuhan.rent.repository.AvailableCarRepository;
+import com.yuhan.rent.response.OfficeCarResponse;
 import com.yuhan.rent.web.OfficeController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,9 @@ public class AvailableCarsServiceImpl implements AvailableCarsService {
 
     @Autowired
     CarService carService;
+
+    @Autowired
+    OfficeService officeService;
 
     private static final Logger logger = LoggerFactory.getLogger(AvailableCarsServiceImpl.class);
 
@@ -74,14 +79,63 @@ public class AvailableCarsServiceImpl implements AvailableCarsService {
     }
 
     @Override
-    public void deleteAvailableCar(int RegistrationNumber) {
-        availableCarRepository.deleteById(RegistrationNumber);
+    public void deleteAvailableCar(int officeUid, int carUid) {
+        List<AvailableCars> availableCars = availableCarRepository.findByOfficeUid(officeUid);
+        for (AvailableCars cars : availableCars) {
+            if (cars.getCar().getCarUid() == carUid) {
+                availableCarRepository.delete(cars);
+            }
+        }
     }
+
 
     @Transactional
     @Override
     public void updateAvailableCar(int RegistrationNumber, String availabilitySchedules) {
         availableCarRepository.updateAvailableCars(RegistrationNumber, availabilitySchedules);
+    }
+
+    @Override
+    public void saveAvailableCar(AvailableCars availableCar) {
+        availableCarRepository.save(availableCar);
+    }
+
+    @Override
+    public List<OfficeCarResponse> findByOfficeUid(int officeUid) {
+        List<OfficeCarResponse> officeCarResponses = new ArrayList<>();
+        List<AvailableCars> availableCars = availableCarRepository.findByOfficeUid(officeUid);
+        Office office = officeService.findById(officeUid);
+        for (AvailableCars cars : availableCars) {
+            officeCarResponses.add(new OfficeCarResponse(office, cars));
+        }
+        return officeCarResponses;
+    }
+
+    @Override
+    public List<OfficeCarResponse> findByOfficeUidCarUid(int officeUid, int carUid) {
+        List<OfficeCarResponse> officeCarResponses = new ArrayList<>();
+        List<AvailableCars> availableCars = availableCarRepository.findByOfficeUid(officeUid);
+        Office office = officeService.findById(officeUid);
+        AvailableCars car = new AvailableCars();
+        for (AvailableCars cars : availableCars) {
+            if (cars.getCar().getCarUid() == carUid) {
+                car = cars;
+            }
+        }
+        officeCarResponses.add(new OfficeCarResponse(office, car));
+        return officeCarResponses;
+    }
+
+    @Override
+    public List<OfficeCarResponse> findByCarUid(int carUid) {
+        List<OfficeCarResponse> officeCarResponses = new ArrayList<>();
+        Car car = carService.findByCarUid(carUid);
+        List<AvailableCars> availableCars = availableCarRepository.findByCar(car);
+        for (AvailableCars cars : availableCars){
+            Office office = officeService.findById(cars.getOfficeUid());
+            officeCarResponses.add(new OfficeCarResponse(office, cars));
+        }
+        return officeCarResponses;
     }
 
 
